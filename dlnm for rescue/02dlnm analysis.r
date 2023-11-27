@@ -7,7 +7,8 @@ data = read.csv('C:\\Users\\16521\\Desktop\\文件夹\\数据\\2020-2023 carTemp
 
 data$date = as.Date(data$date, '%Y-%m-%d')
 data$year = format(data$date, '%Y')
-
+data$yday = format(data$date, '%j')
+data$dow = format(data$date, '%w')
 
 #  define variable
 
@@ -37,7 +38,7 @@ cb = crossbasis(data$temp_mean, lag=lag, argvar = argvar, arglag = arglag)
 
 
 #  define model formula used in prediction
-formula = count ~ cb + ns(date, df = dfseas*length(unique(data$year)))
+formula = count ~ cb + ns(date, df = dfseas*length(unique(data$year))) + dow + bs(yday, df=3)
 model = glm(formula, data, family = quasipoisson, na.action = 'na.exclude')
 # define censoring
 cen = mean(data$temp_mean, na.rm=T)
@@ -48,7 +49,7 @@ pred = crosspred(cb, model, cen=cen)
 
 
 png( 
-    filename = "温度-滞后期-相对风险.png", # 文件名称
+    filename = "温度-滞后期-相对风险_季节性+长期趋势+星期.png", # 文件名称
     width = 1440,           # 宽
     height = 1440,          # 高
     units = "px",          # 单位
@@ -63,7 +64,7 @@ plot(pred, "contour", xlab="MeanTemp", key.title=title("RR"),
 dev.off()
 
 png( 
-    filename = "年平均温度不同滞后期的相对风险.png", # 文件名称
+    filename = "年平均温度不同滞后期的相对风险_季节性+长期趋势+星期.png", # 文件名称
     width = 1440,           # 宽
     height = 1000,          # 高
     units = "px",          # 单位
