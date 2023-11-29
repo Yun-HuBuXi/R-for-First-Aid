@@ -80,6 +80,6 @@ pred = crosspred(cb, model, cen=cen)
 #  draw cumulative RR (use pred$allRRfit)
 plot(pred, 'overall', xlab='温度', ylab='Cumulative RR', main = '测试', lwd= 2)
 which.min(pred$allRRfit)
-pred.min = crosspred(cb, model = model, cen=26)
-# plot(pred.min, 'overall', xlab='温度', ylab='Cumulative RR', main = '测试', lwd= 2)
+pred.min = crosspred(cb, model = model, cen=12.5)
+plot(pred.min, 'overall', xlab='温度', ylab='Cumulative RR', main = '测试', lwd= 2)
 
