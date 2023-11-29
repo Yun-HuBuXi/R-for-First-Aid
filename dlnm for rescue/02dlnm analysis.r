@@ -3,7 +3,7 @@ library(splines)
 
 
 #  read dataset
-data = read.csv('C:\\Users\\16521\\Desktop\\文件夹\\数据\\2020-2023 carTemperRh.csv')
+data = read.csv('C:\\Users\\16521\\Desktop\\文件夹\\数据\\2020-2023 carTemperRhDowHoliday.csv')
 
 data$date = as.Date(data$date, '%Y-%m-%d')
 data$year = format(data$date, '%Y')
@@ -11,33 +11,34 @@ data$year = format(data$date, '%Y')
 
 #  define variable
 
-## percentiles for temperature
-per = quantile(data$temp_mean, c(2.5, 10, 25, 50, 75, 90, 97.5) / 100, na.rm=T)
 ## degree of freedom for seasonality
-dfseas = 8
+dfseas = 9
 ## lag days
-lag = 21
+lag = 7
 ## number of knots for lag
-lagnk = 3
+# lagnk = 3
 ## the funciton to exposure reaction(argvar in crossbasis)
-varfun = 'bs'
+varfun = 'ns'
 ## the df for exposure function
-vardegree = 2
+# vardegree = 3
 ##  the knots for exposure function
-varper = c(10, 75, 90)
+# varper = c(10, 75, 90)
 
 
 
 #  define the crossbasis
-argvar = list(fun=varfun, knots = quantile(data$temp_mean, varper/100, na.rm=T), degree = vardegree)
-arglag = list(knots = logknots(lag, lagnk))
+# argvar = list(fun=varfun, knots = quantile(data$temp_mean, varper/100, na.rm=T), degree = vardegree)
+argvar = list(fun=varfun, df = 4)
+arglag = list(knots = logknots(lag, df = 5))
 cb = crossbasis(data$temp_mean, lag=lag, argvar = argvar, arglag = arglag)
 
-
+#  define other splines 
+time = ns(data$date, df = dfseas*length(unique(data$year)))
+rh = ns(data$rh_mean, df = 3)
 
 
 #  define model formula used in prediction
-formula = count ~ cb + ns(date, df = dfseas*length(unique(data$year)))
+formula = count ~ cb + time + rh + dow + holiday
 model = glm(formula, data, family = quasipoisson, na.action = 'na.exclude')
 # define censoring
 cen = mean(data$temp_mean, na.rm=T)
@@ -78,3 +79,7 @@ pred = crosspred(cb, model, cen=cen)
 
 #  draw cumulative RR (use pred$allRRfit)
 plot(pred, 'overall', xlab='温度', ylab='Cumulative RR', main = '测试', lwd= 2)
+which.min(pred$allRRfit)
+pred.min = crosspred(cb, model = model, cen=26)
+# plot(pred.min, 'overall', xlab='温度', ylab='Cumulative RR', main = '测试', lwd= 2)
+
