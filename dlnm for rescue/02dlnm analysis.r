@@ -47,31 +47,34 @@ pred = crosspred(cb, model, cen=cen)
 
 
 
-png( 
-    filename = "温度-滞后期-相对风险.png", # 文件名称
-    width = 1440,           # 宽
-    height = 1440,          # 高
-    units = "px",          # 单位
-    bg = "white",          # 背景颜色
-    res = 300) 
-plot(pred, "contour", xlab="MeanTemp", key.title=title("RR"),
-# cex.axis=2,
-    #  plot.axes={axis(1,cex.axis=2)
-    #    axis(2,cex.axis=2)},
-    #  key.axes = axis(4,cex.axis=2),
-     plot.title=title(xlab="MeanTemp (°C)",ylab="Lag (days)"))
-dev.off()
+# png( 
+#     filename = "温度-滞后期-相对风险.png", # 文件名称
+#     width = 1440,           # 宽
+#     height = 1440,          # 高
+#     units = "px",          # 单位
+#     bg = "white",          # 背景颜色
+#     res = 300) 
+# plot(pred, "contour", xlab="MeanTemp", key.title=title("RR"),
+# # cex.axis=2,
+#     #  plot.axes={axis(1,cex.axis=2)
+#     #    axis(2,cex.axis=2)},
+#     #  key.axes = axis(4,cex.axis=2),
+#      plot.title=title(xlab="MeanTemp (°C)",ylab="Lag (days)"))
+# dev.off()
 
-png( 
-    filename = "年平均温度不同滞后期的相对风险.png", # 文件名称
-    width = 1440,           # 宽
-    height = 1000,          # 高
-    units = "px",          # 单位
-    bg = "white",          # 背景颜色
-    res = 300) 
-plot(pred, "slices", var = 0, col=3, ylab='RR',
-    ci.arg = list(density=15, lwd=2),
-    main = '年平均温度不同滞后期的相对风险')     
-dev.off()
+# png( 
+#     filename = "年平均温度不同滞后期的相对风险.png", # 文件名称
+#     width = 1440,           # 宽
+#     height = 1000,          # 高
+#     units = "px",          # 单位
+#     bg = "white",          # 背景颜色
+#     res = 300) 
+# plot(pred, "slices", var = 0, col=3, ylab='RR',
+#     ci.arg = list(density=15, lwd=2),
+#     main = '年平均温度不同滞后期的相对风险')     
+# dev.off()
 
 
+
+#  draw cumulative RR (use pred$allRRfit)
+plot(pred, 'overall', xlab='温度', ylab='Cumulative RR', main = '测试', lwd= 2)
